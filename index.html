@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Klammersetzung</title>
+	<style>
+		#code {
+			float: left;
+			width: 30%;
+		}
+	</style>
+
+	<script src="script.js"></script>
+</head>
+
+<body>
+	<div id="code">
+		<h2>Next Line</h2>
+		<pre><code id="cNextLine">int main()
+{ 
+  int x = 0;
+   
+  while ( x < 10 )
+  {
+      printf( "%d\n", x );
+      x++;
+  }
+}</code></pre>
+		<h2>Same Line</h2>
+		<pre><code id="cSameLine">public class ClassicSingleton {
+
+   private static ClassicSingleton instance = null;
+   private ClassicSingleton() {
+      // Exists only to defeat instantiation.
+   }
+
+   public static ClassicSingleton getInstance() {
+      if(instance == null) {
+         instance = new ClassicSingleton();
+      }
+      return instance;
+   }
+}</code></pre>
+	</div>
+
+	<div id="outputContainer">
+		<h2>Output</h2>
+		<button id="execute">Klammersetzung ändern</button>
+		<div id="output"></div>
+	</div>
+
+</body>
+
+</html>
