@@ -1,30 +1,36 @@
 document.addEventListener("DOMContentLoaded", () =>
 {
+	console.log("Orthodontia is running");
 
-	document.getElementById("execute").addEventListener("click", changeCurlyBrackets);
+	let codeBlocks = identifyCodeBlocks();
 
-	// identifyCodeBlocks();
-	markCodeBlocks();
+	codeBlocks.forEach(element =>
+	{
+        markCodeBlock(element);
+	})
 
+	// codeBlocks.forEach(function(block)
+	// {
+	// 	block.innerHTML = changeCurlyBrackets(block.innerHTML);
+	// })
 
 });
 
-function changeCurlyBrackets()
+function changeCurlyBrackets(code)
 {
+	console.log("changeCurlyBrackets wurde aufgerufen");
+
 	var curlyBracketsRegExp = / \{/;
 	var curlyBracketsRegExpAll = / \{/g;
 	var whiteSpaceRegExp = /[^ ]/;
-	var cCodeNextLine = document.getElementById("cNextLine").innerText;
-	var cCodeSameLine = document.getElementById("cSameLine").innerText;
 
-	var linesOfcCodeSameLine = cCodeSameLine.split("\n");
+	var linesOfCode = code.split("\n");
 
 	var result = "";
 
-	linesOfcCodeSameLine.forEach(line =>
+	linesOfCode.forEach(line =>
 	{
 		var whiteSpaceCount = line.search(whiteSpaceRegExp);
-		console.log(whiteSpaceCount);
 
 		if (whiteSpaceCount != -1)
 		{
@@ -39,43 +45,52 @@ function changeCurlyBrackets()
 		}
 		else
 		{
-			var modifiedLine = line.replace(curlyBracketsRegExpAll, "\n{");
+			var modifiedLine = line.replace(curlyBracketsRegExpAll, "<br>{");
 		}
 
 		result += modifiedLine + "\n";
 	});
 
-	document.getElementById("cSameLine").innerText = result;
+	return result;
 }
 
 function identifyCodeBlocks()
 {
-	var codeElements = document.getElementsByTagName("code");
+	var codeBlocks = Array.from(document.querySelectorAll("pre, code"));
 
-	for (let i = 0; i < codeElements.length; i++)
+	codeBlocks = codeBlocks.filter(element =>
 	{
-		// codeElements.item(i).style.
-	}
+		var containsCodeOrPre = false;
 
+		for (let i = 0; i < element.childNodes.length; i++)
+		{
+			child = element.childNodes.item(i);
+
+			if ((child.nodeName === "CODE") || (child.nodeName === "PRE"))
+			{
+				containsCodeOrPre = true;
+				break;
+			}
+		}
+
+		if (containsCodeOrPre)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	});
+
+	return codeBlocks;
 }
 
-function markCodeBlocks()
+function markCodeBlock(codeBlock)
 {
-		var style = document.createElement("style");
+	var mark = document.createElement("p");
+	mark.innerText = "There be code here:";
+	mark.style.background = "lime";
+	codeBlock.prepend(mark);
 
-		style.setAttribute("media", "screen");
-
-		// WebKit hack :(
-		// style.appendChild(document.createTextNode(""));
-
-		document.head.appendChild(style);
-
-		style.sheet.insertRule("code:before " +
-			"{ " +
-			"content: 'CodeBlock';" +
-			"background: lime;" +
-			"display: block;" +
-			"position: relative;" +
-			"}"
-		);
 }
