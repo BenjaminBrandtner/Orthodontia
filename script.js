@@ -4,10 +4,9 @@ document.addEventListener("DOMContentLoaded", () =>
 
 	let codeBlocks = identifyCodeBlocks();
 
-	codeBlocks.forEach(element =>
-	{
-		markCodeBlock(element);
-	});
+	let styleInfo = buildCodeStyleInfo(codeBlocks);
+
+	markCodeBlock(codeBlocks, styleInfo);
 
 	// codeBlocks.forEach(function (block)
 	// {
@@ -54,17 +53,22 @@ function changeCurlyBrackets(code)
 	return result;
 }
 
+/**
+ * Finds all nodes on the page that are likely to contain code.
+ *
+ * @returns {Array<Node>}
+ */
 function identifyCodeBlocks()
 {
 	var codeBlocks = Array.from(document.querySelectorAll("pre, code"));
 
 	codeBlocks = codeBlocks.filter(element =>
 	{
-		var containsCodeOrPre = false;
+		let containsCodeOrPre = false;
 
 		for (let i = 0; i < element.childNodes.length; i++)
 		{
-			child = element.childNodes.item(i);
+			let child = element.childNodes.item(i);
 
 			if ((child.nodeName === "CODE") || (child.nodeName === "PRE"))
 			{
@@ -73,51 +77,87 @@ function identifyCodeBlocks()
 			}
 		}
 
-		if (containsCodeOrPre)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return !containsCodeOrPre;
 	});
 
 	return codeBlocks;
 }
 
+/**
+ * Creates the tooltip for markCodeBlocks()
+ *
+ * @param {String} text Text to be displayed in the tooltip
+ * @returns {HTMLSpanElement} The element that needs to be prepended to the codeBlock
+ */
 function createTooltip(text)
 {
-	var markContainer = document.createElement("span");
-	markContainer.style.position = "relative";
-	markContainer.style.display = "hidden";
+	var tooltipContainer = document.createElement("span");
+	tooltipContainer.style.position = "relative";
+	tooltipContainer.style.display = "hidden";
 
-	var mark = document.createElement("div");
-	mark.innerText = text;
-	mark.style.background = "lime";
-	mark.style.transition = "opacity 200ms";
-	mark.addEventListener("mouseenter", event => event.target.style.opacity = "0");
-	mark.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
-	mark.style.position = "absolute";
-	mark.style.display = "inline-block";
-	mark.style.bottom = "100%";
-	mark.style.zIndex = "10";
-	mark.style.fontSize = "small";
+	var tooltip = document.createElement("div");
+	tooltip.innerText = text;
+	tooltip.style.background = "lime";
+	tooltip.style.transition = "opacity 200ms";
+	tooltip.addEventListener("mouseenter", event => event.target.style.opacity = "0");
+	tooltip.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
+	tooltip.style.position = "absolute";
+	tooltip.style.display = "inline-block";
+	tooltip.style.bottom = "100%";
+	tooltip.style.zIndex = "10";
+	tooltip.style.fontSize = "small";
 
-	markContainer.appendChild(mark);
+	tooltipContainer.appendChild(tooltip);
 
-	return markContainer;
+	return tooltipContainer;
 }
 
-function markCodeBlock(codeBlock)
+/**
+ * For debugging purposes: Marks all the identified codeBlocks with a tooltip containing their identified codestyle
+ *
+ * @param {Array<Node>} codeBlocks
+ * @param {Array<String>} styleInfo
+ */
+function markCodeBlock(codeBlocks, styleInfo)
 {
 	// Mouth Emoji: \ud83d\udc44
 
-	codeBlock.prepend(createTooltip("Here be code:"));
+	for (let i = 0; i < codeBlocks.length; i++)
+	{
+		codeBlocks[i].prepend(createTooltip(styleInfo[i]))
+	}
 }
 
+/**
+ * Builds an Array containing info about codeStyle for each element of codeBlocks
+ *
+ * @param {Array<Node>} codeBlocks Array of all codeBlocks on the page
+ *
+ * @returns {Array<String>} Array containing the info "SAMELINE", "NEXTLINE", or "NONE" for each element of codeBlocks
+ */
+function buildCodeStyleInfo(codeBlocks)
+{
+	let codeStyles = [];
+
+	for (let i = 0; i < codeBlocks.length; i++)
+	{
+		if(codeBlocks[i].nodeName === "CODE")
+		{
+			codeStyles[i] = identifyCodeStyle(codeBlocks[i]);
+		}
+	}
+
+	return codeStyles;
+}
+
+/**
+ * Finds out if this codeBlock's braces are on the same or the next line or if it doesn't contain any braces
+ *
+ * @param {Node} codeBlock
+ *
+ * @returns {String} "SAMELINE", "NEXTLINE", or "NONE"
+ */
 function identifyCodeStyle(codeBlock)
 {
-	//TODO: Write this function
-
+	return "NONE";
 }
