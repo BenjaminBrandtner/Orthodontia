@@ -1,12 +1,21 @@
+var debug = true;
+
 document.addEventListener("DOMContentLoaded", () =>
 {
-	console.log("Orthodontia is running");
+
+	if (debug)
+	{
+		console.log("Orthodontia is running with Debug Flag");
+	}
 
 	let codeBlocks = identifyCodeBlocks();
 
-	let styleInfo = buildCodeStyleInfo(codeBlocks);
+	let styleInfo = buildBraceStyleInfo(codeBlocks);
 
-	markCodeBlock(codeBlocks, styleInfo);
+	if (debug)
+	{
+		markCodeBlock(codeBlocks, styleInfo);
+	}
 
 	// codeBlocks.forEach(function (block)
 	// {
@@ -60,7 +69,8 @@ function changeCurlyBrackets(code)
  */
 function identifyCodeBlocks()
 {
-	var codeBlocks = Array.from(document.querySelectorAll("pre, code"));
+	var codeBlocks = Array.from(document.querySelectorAll("pre, code, .w3-code"));
+	//Todo: Make a list of popular websites and how they mark their codeblocks, if they aren't selected by this
 
 	codeBlocks = codeBlocks.filter(element =>
 	{
@@ -113,41 +123,51 @@ function createTooltip(text)
 }
 
 /**
- * For debugging purposes: Marks all the identified codeBlocks with a tooltip containing their identified codestyle
+ * For debugging purposes: Marks all the identified codeBlocks with a tooltip containing their identified braceStyle
  *
  * @param {Array<Node>} codeBlocks
  * @param {Array<String>} styleInfo
  */
 function markCodeBlock(codeBlocks, styleInfo)
 {
-	// Mouth Emoji: \ud83d\udc44
-
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
-		codeBlocks[i].prepend(createTooltip(styleInfo[i]))
+		codeBlocks[i].prepend(createTooltip(styleInfo[i]));
 	}
 }
 
 /**
- * Builds an Array containing info about codeStyle for each element of codeBlocks
+ * Builds an Array containing info about braceStyle for each element of codeBlocks
  *
  * @param {Array<Node>} codeBlocks Array of all codeBlocks on the page
  *
- * @returns {Array<String>} Array containing the info "SAMELINE", "NEXTLINE", or "NONE" for each element of codeBlocks
+ * @returns {Array<String>} Array containing the info "SAMELINE", "NEXTLINE", "UNCLEAR" or "NONE" for each element of codeBlocks
  */
-function buildCodeStyleInfo(codeBlocks)
+function buildBraceStyleInfo(codeBlocks)
 {
-	let codeStyles = [];
+	let styleInfo = [];
 
-	for (let i = 0; i < codeBlocks.length; i++)
+	for (var i = 0; i < codeBlocks.length; i++)
 	{
-		if(codeBlocks[i].nodeName === "CODE")
+		styleInfo[i] = identifyBraceStyle(codeBlocks[i]);
+	}
+
+	if (window.debug)
+	{
+		console.log("Completed Brace Style Identification. Analysed " + i + " CodeBlocks.");
+	}
+
+	if (debug)
+	{
+		for (let i = 0; i < codeBlocks.length; i++)
 		{
-			codeStyles[i] = identifyCodeStyle(codeBlocks[i]);
+			console.log("Identified Bracestyle " + styleInfo[i] + " for ");
+			console.log(codeBlocks[i]);
 		}
 	}
 
-	return codeStyles;
+
+	return styleInfo;
 }
 
 /**
@@ -155,9 +175,52 @@ function buildCodeStyleInfo(codeBlocks)
  *
  * @param {Node} codeBlock
  *
- * @returns {String} "SAMELINE", "NEXTLINE", or "NONE"
+ * @returns {String} "SAMELINE", "NEXTLINE", "UNCLEAR" or "NONE"
  */
-function identifyCodeStyle(codeBlock)
+function identifyBraceStyle(codeBlock)
 {
-	return "NONE";
+	const sameLine = /\S+(.+)?{/g;
+	const nextLine = /\n(\s+)?{/g;
+
+	let sameLineMatches = codeBlock.textContent.match(sameLine);
+	let nextLineMatches = codeBlock.textContent.match(nextLine);
+
+	if (sameLineMatches === null)
+	{
+		sameLineMatches = [];
+	}
+	if (nextLineMatches === null)
+	{
+		nextLineMatches = [];
+	}
+
+	if (sameLineMatches.length > 0 && nextLineMatches.length > 0)
+	{
+		if (debug)
+		{
+			console.log("Unclear Brace Style for:");
+			console.log(codeBlock);
+			console.log("SAMELINE matches:");
+			console.log(sameLineMatches);
+			console.log("NEXTLINE matches:");
+			console.log(nextLineMatches);
+		}
+
+		return "UNCLEAR";
+	}
+
+	if (sameLineMatches.length === 0 && nextLineMatches.length === 0)
+	{
+		return "NONE";
+	}
+
+	if (sameLineMatches.length > 0)
+	{
+		return "SAMELINE";
+	}
+
+	if (nextLineMatches.length > 0)
+	{
+		return "NEXTLINE";
+	}
 }
