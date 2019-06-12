@@ -86,11 +86,29 @@ function identifyCodeBlocks()
 	return codeBlocks;
 }
 
+function createTooltip(text)
+{
+	var markContainer = document.createElement("div");
+	markContainer.style.position = "relative";
+	markContainer.style.display = "hidden";
+
+	var mark = document.createElement("div");
+	mark.innerText = text;
+	mark.style.background = "lime";
+	mark.style.opacity = "0.7";
+	mark.style.position = "absolute";
+	mark.style.display = "inline-block";
+	mark.style.bottom = "100%";
+	mark.style.zIndex = "1";
+
+	markContainer.appendChild(mark);
+
+	return markContainer;
+}
+
 function markCodeBlock(codeBlock)
 {
-	var mark = document.createElement("p");
-	mark.innerText = "There be code here:";
-	mark.style.background = "lime";
-	codeBlock.prepend(mark);
+	var markContainer = createTooltip("There be code here:");
 
+	codeBlock.prepend(markContainer);
 }
