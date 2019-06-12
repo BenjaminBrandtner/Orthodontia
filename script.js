@@ -6,15 +6,15 @@ document.addEventListener("DOMContentLoaded", () =>
 
 	codeBlocks.forEach(element =>
 	{
-        markCodeBlock(element);
-	})
+		markCodeBlock(element);
+	});
 
-	// codeBlocks.forEach(function(block)
+	// codeBlocks.forEach(function (block)
 	// {
 	// 	block.innerHTML = changeCurlyBrackets(block.innerHTML);
-	// })
-
+	// });
 });
+
 
 function changeCurlyBrackets(code)
 {
@@ -32,7 +32,7 @@ function changeCurlyBrackets(code)
 	{
 		var whiteSpaceCount = line.search(whiteSpaceRegExp);
 
-		if (whiteSpaceCount != -1)
+		if (whiteSpaceCount !== -1)
 		{
 			var replacementString = "\n";
 			for (let i = 0; i < whiteSpaceCount; i++)
@@ -45,7 +45,7 @@ function changeCurlyBrackets(code)
 		}
 		else
 		{
-			var modifiedLine = line.replace(curlyBracketsRegExpAll, "<br>{");
+			var modifiedLine = line.replace(curlyBracketsRegExpAll, "\n<br>{");
 		}
 
 		result += modifiedLine + "\n";
@@ -88,18 +88,21 @@ function identifyCodeBlocks()
 
 function createTooltip(text)
 {
-	var markContainer = document.createElement("div");
+	var markContainer = document.createElement("span");
 	markContainer.style.position = "relative";
 	markContainer.style.display = "hidden";
 
 	var mark = document.createElement("div");
 	mark.innerText = text;
 	mark.style.background = "lime";
-	mark.style.opacity = "0.7";
+	mark.style.transition = "opacity 200ms";
+	mark.addEventListener("mouseenter", event => event.target.style.opacity = "0");
+	mark.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
 	mark.style.position = "absolute";
 	mark.style.display = "inline-block";
 	mark.style.bottom = "100%";
-	mark.style.zIndex = "1";
+	mark.style.zIndex = "10";
+	mark.style.fontSize = "small";
 
 	markContainer.appendChild(mark);
 
@@ -108,7 +111,13 @@ function createTooltip(text)
 
 function markCodeBlock(codeBlock)
 {
-	var markContainer = createTooltip("There be code here:");
+	// Mouth Emoji: \ud83d\udc44
 
-	codeBlock.prepend(markContainer);
+	codeBlock.prepend(createTooltip("Here be code:"));
+}
+
+function identifyCodeStyle(codeBlock)
+{
+	//TODO: Write this function
+
 }
