@@ -2,24 +2,20 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Klammersetzung</title>
-	<style>
-		#code {
-			float: left;
-			width: 30%;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Klammersetzung</title>
+    <style>
+    </style>
 
-	<script src="script.js"></script>
+    <script src="orthodontia.js"></script>
 </head>
 
 <body>
-	<div id="code">
-		<h2>Next Line</h2>
-		<pre><code id="cNextLine">int main()
+<div id="code">
+    <h2>Next Line</h2>
+    <pre><code id="cNextLine">int main()
 { 
   int x = 0;
    
@@ -29,8 +25,8 @@
       x++;
   }
 }</code></pre>
-		<h2>Same Line</h2>
-		<pre><code id="cSameLine">public class ClassicSingleton {
+    <h2>Same Line</h2>
+    <pre><code id="cSameLine">public class ClassicSingleton {
 
    private static ClassicSingleton instance = null;
    private ClassicSingleton() {
@@ -44,14 +40,31 @@
       return instance;
    }
 }</code></pre>
-	</div>
+</div>
+<div id="php">
+    <h2>php next line</h2>
+    <div class="phpcode"><code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br/></span><span style="color: #007700">function&nbsp;</span><span
+            style="color: #0000BB">foo</span><span style="color: #007700">()&nbsp;<br/>{<br/>&nbsp;&nbsp;function&nbsp;</span><span
+            style="color: #0000BB">bar</span><span style="color: #007700">()&nbsp;<br/>&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span
+            style="color: #DD0000">"I&nbsp;don't&nbsp;exist&nbsp;until&nbsp;foo()&nbsp;is&nbsp;called.\n"</span><span
+            style="color: #007700">;<br/>&nbsp;&nbsp;}<br/>}<br/><br/></span><span
+            style="color: #FF8000">/*&nbsp;</span>
+</span>
+    </code></div>
+</div>
 
-	<div id="outputContainer">
-		<h2>Output</h2>
-		<button id="execute">Klammersetzung ändern</button>
-		<div id="output"></div>
-	</div>
-
+<div id="php2">
+    <h2>php same line</h2>
+    <div class="phpcode"><code><span style="color: #000000">
+    <span style="color: #0000BB">&lt;?php<br/></span><span style="color: #007700">function&nbsp;</span><span
+            style="color: #0000BB">foo</span><span
+            style="color: #007700">()&nbsp;{<br/>&nbsp;&nbsp;function&nbsp;</span><span
+            style="color: #0000BB">bar</span><span style="color: #007700">()&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span
+            style="color: #DD0000">"I&nbsp;don't&nbsp;exist&nbsp;until&nbsp;foo()&nbsp;is&nbsp;called.\n"</span><span
+            style="color: #007700">;<br/>&nbsp;&nbsp;}<br/>}<br/><br/></span><span
+            style="color: #FF8000">/*&nbsp;</span></span>
+    </code></div>
+</div>
 </body>
-
 </html>

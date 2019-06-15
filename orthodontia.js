@@ -92,7 +92,6 @@ function changeBraces(codeBlock, preferredStyle)
 	//TODO: Write this method.
 	//Elements and text nodes need to be treated differently, probably.
 
-
 }
 
 //Deprecated, only here for reference
@@ -271,8 +270,10 @@ function identifyBraceStyle(codeBlock)
 	const sameLine = /\S+(.+)?{/g;
 	const nextLine = /\n(\s+)?{/g;
 
-	let sameLineMatches = codeBlock.textContent.match(sameLine);
-	let nextLineMatches = codeBlock.textContent.match(nextLine);
+	//Using Element.innerText here is advised, because it is aware of how it will be rendered as opposed to Node.textContent
+	//See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
+	let sameLineMatches = codeBlock.innerText.match(sameLine);
+	let nextLineMatches = codeBlock.innerText.match(nextLine);
 
 	if (sameLineMatches === null)
 	{
