@@ -1,9 +1,14 @@
-var debug = true;
+var orthodontiaOptions =
+	{
+		debug: true,
+		debugInfo: {},
+		classlist: ".w3-code"
+	};
 
 document.addEventListener("DOMContentLoaded", () =>
 {
 
-	if (debug)
+	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
 	}
@@ -12,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () =>
 
 	let styleInfo = buildBraceStyleInfo(codeBlocks);
 
-	if (debug)
+	if (orthodontiaOptions.debug)
 	{
 		markCodeBlock(codeBlocks, styleInfo);
 	}
@@ -64,13 +69,13 @@ function changeCurlyBrackets(code)
 
 /**
  * Finds all nodes on the page that are likely to contain code.
+ * Hopefully does not match the same codeblock twice.
  *
  * @returns {Array<Node>}
  */
 function identifyCodeBlocks()
 {
-	var codeBlocks = Array.from(document.querySelectorAll("pre, code, .w3-code"));
-	//Todo: Make a list of popular websites and how they mark their codeblocks, if they aren't selected by this
+	var codeBlocks = Array.from(document.querySelectorAll("pre, code"));
 
 	codeBlocks = codeBlocks.filter(element =>
 	{
@@ -90,7 +95,21 @@ function identifyCodeBlocks()
 		return !containsCodeOrPre;
 	});
 
-	return codeBlocks;
+	if (orthodontiaOptions.debug)
+	{
+		console.log("Completed basic Code Block Identification. Identified " + codeBlocks.length + " CodeBlocks");
+		orthodontiaOptions.debugInfo.basicCodeBlocks = codeBlocks;
+	}
+
+	let userCodeBlocks = Array.from(document.querySelectorAll(orthodontiaOptions.classlist));
+
+	if (orthodontiaOptions.debug)
+	{
+		console.log("Completed extended Code Block Identification based on User classes. Identified " + userCodeBlocks.length + " additional CodeBlocks");
+		orthodontiaOptions.debugInfo.userCodeBlocks = userCodeBlocks;
+	}
+
+	return codeBlocks.concat(userCodeBlocks);
 }
 
 /**
@@ -130,6 +149,8 @@ function createTooltip(text)
  */
 function markCodeBlock(codeBlocks, styleInfo)
 {
+	console.log("Creating graphical tooltips.");
+
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
 		codeBlocks[i].prepend(createTooltip(styleInfo[i]));
@@ -152,12 +173,12 @@ function buildBraceStyleInfo(codeBlocks)
 		styleInfo[i] = identifyBraceStyle(codeBlocks[i]);
 	}
 
-	if (window.debug)
+	if (orthodontiaOptions.debug)
 	{
-		console.log("Completed Brace Style Identification. Analysed " + i + " CodeBlocks.");
+		console.log("Completed Brace Style Identification.");
 	}
 
-	if (debug)
+	if (orthodontiaOptions.debug)
 	{
 		for (let i = 0; i < codeBlocks.length; i++)
 		{
@@ -196,7 +217,7 @@ function identifyBraceStyle(codeBlock)
 
 	if (sameLineMatches.length > 0 && nextLineMatches.length > 0)
 	{
-		if (debug)
+		if (orthodontiaOptions.debug)
 		{
 			console.log("Unclear Brace Style for:");
 			console.log(codeBlock);
