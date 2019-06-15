@@ -2,7 +2,15 @@ var orthodontiaOptions =
 	{
 		debug: true,
 		debugInfo: {},
-		classlist: ".w3-code"
+		classlist: ".w3-code",
+		preferredBraceStyle: "NEXTLINE",
+		automaticConversion: true
+	};
+
+var orthodontiaData =
+	{
+		codeBlocks: null,
+		styleInfo: null
 	};
 
 document.addEventListener("DOMContentLoaded", () =>
@@ -22,13 +30,72 @@ document.addEventListener("DOMContentLoaded", () =>
 		markCodeBlocks(codeBlocks, styleInfo);
 	}
 
-	// codeBlocks.forEach(function (block)
-	// {
-	// 	block.innerHTML = changeCurlyBrackets(block.innerHTML);
-	// });
+	orthodontiaData.codeBlocks = codeBlocks;
+	orthodontiaData.styleInfo = styleInfo;
+
+	if (orthodontiaOptions.automaticConversion)
+	{
+		changeAllBraces();
+	}
 });
 
+/**
+ * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
+ * Changes all codeBlocks to the preferred braceStyle.
+ */
+function changeAllBraces()
+{
+	if(orthodontiaOptions.debug)
+	{
+		console.log("Starting orthodontic procedure.");
+	}
 
+	let styleInfo = orthodontiaData.styleInfo;
+	let codeBlocks = orthodontiaData.codeBlocks;
+	let blocksChanged = 0;
+
+	for (let i = 0; i < codeBlocks.length; i++)
+	{
+		if (styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
+		{
+			continue;
+		}
+		else if (styleInfo[i] === orthodontiaOptions.preferredBraceStyle)
+		{
+			continue;
+		}
+
+		changeBraces(codeBlocks[i], orthodontiaOptions.preferredBraceStyle);
+		styleInfo[i] = orthodontiaOptions.preferredBraceStyle;
+		blocksChanged++;
+	}
+
+	if (orthodontiaOptions.debug)
+	{
+		console.log("Procedure complete. " + blocksChanged + " CodeBlocks changed.");
+	}
+}
+
+/**
+ * Changes BraceStyle of given codeblock to the preferred style
+ * @param {Node} codeBlock
+ * @param {String} preferredStyle
+ */
+function changeBraces(codeBlock, preferredStyle)
+{
+	if (orthodontiaOptions.debug)
+	{
+		console.log("Changing to " + preferredStyle + ": ");
+		console.log(codeBlock);
+	}
+
+	//TODO: Write this method.
+	//Elements and text nodes need to be treated differently, probably.
+
+
+}
+
+//Deprecated, only here for reference
 function changeCurlyBrackets(code)
 {
 	console.log("changeCurlyBrackets wurde aufgerufen");
@@ -119,7 +186,7 @@ function identifyCodeBlocks()
  * @param {Number} i The number of times this function has been called
  * @returns {HTMLSpanElement} The element that needs to be prepended to the codeBlock
  */
-function createTooltip(text,i)
+function createTooltip(text, i)
 {
 	var tooltipContainer = document.createElement("span");
 	tooltipContainer.style.position = "relative";
@@ -127,7 +194,7 @@ function createTooltip(text,i)
 
 	var tooltip = document.createElement("div");
 	tooltip.innerText = text;
-	tooltip.style.background = i%2 === 0 ?  "#00ff00" : "#00ffff";
+	tooltip.style.background = i % 2 === 0 ? "#00ff00" : "#00ffff";
 	tooltip.style.transition = "opacity 200ms";
 	tooltip.addEventListener("mouseenter", event => event.target.style.opacity = "0");
 	tooltip.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
@@ -154,7 +221,7 @@ function markCodeBlocks(codeBlocks, styleInfo)
 
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
-		codeBlocks[i].prepend(createTooltip(styleInfo[i],i));
+		codeBlocks[i].prepend(createTooltip(styleInfo[i], i));
 	}
 }
 
@@ -220,7 +287,7 @@ function identifyBraceStyle(codeBlock)
 	{
 		if (orthodontiaOptions.debug)
 		{
-			console.log("Unclear Brace Style for:");
+			console.warn("Unclear Brace Style for:");
 			console.log(codeBlock);
 			console.log("SAMELINE matches:");
 			console.log(sameLineMatches);
