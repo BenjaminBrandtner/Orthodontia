@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () =>
 
 	if (orthodontiaOptions.debug)
 	{
-		markCodeBlock(codeBlocks, styleInfo);
+		markCodeBlocks(codeBlocks, styleInfo);
 	}
 
 	// codeBlocks.forEach(function (block)
@@ -116,9 +116,10 @@ function identifyCodeBlocks()
  * Creates the tooltip for markCodeBlocks()
  *
  * @param {String} text Text to be displayed in the tooltip
+ * @param {Number} i The number of times this function has been called
  * @returns {HTMLSpanElement} The element that needs to be prepended to the codeBlock
  */
-function createTooltip(text)
+function createTooltip(text,i)
 {
 	var tooltipContainer = document.createElement("span");
 	tooltipContainer.style.position = "relative";
@@ -126,7 +127,7 @@ function createTooltip(text)
 
 	var tooltip = document.createElement("div");
 	tooltip.innerText = text;
-	tooltip.style.background = "lime";
+	tooltip.style.background = i%2 === 0 ?  "#00ff00" : "#00ffff";
 	tooltip.style.transition = "opacity 200ms";
 	tooltip.addEventListener("mouseenter", event => event.target.style.opacity = "0");
 	tooltip.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
@@ -147,13 +148,13 @@ function createTooltip(text)
  * @param {Array<Node>} codeBlocks
  * @param {Array<String>} styleInfo
  */
-function markCodeBlock(codeBlocks, styleInfo)
+function markCodeBlocks(codeBlocks, styleInfo)
 {
 	console.log("Creating graphical tooltips.");
 
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
-		codeBlocks[i].prepend(createTooltip(styleInfo[i]));
+		codeBlocks[i].prepend(createTooltip(styleInfo[i],i));
 	}
 }
 
