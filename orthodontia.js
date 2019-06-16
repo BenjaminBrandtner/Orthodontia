@@ -1,41 +1,66 @@
 //TODO: Things like inline declaration of Arrays (var x = {1,2,3}) are also identified as SAMELINE and affected by the changeBraces
 
-var orthodontiaOptions =
+//Chrome Plugin Functionality
+{
+	chrome.storage.sync.get(["orthodontiaOptions"], result =>
 	{
-		debug: true,
-		debugInfo: {},
-		classlist: ".w3-code",
-		preferredBraceStyle: "NEXTLINE",
-		automaticConversion: true
-	};
+		if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
+		{
+			console.error("Orthodontia Options could not be loaded");
+			return;
+		}
 
-var orthodontiaData =
+		window.orthodontiaOptions = result.orthodontiaOptions;
+		startOrthodontia();
+	});
+
+	/**
+	 * Displays a number as a badge on the extension icon.
+	 *
+	 * @param {Number} number
+	 */
+	function displayBlocksChanged(number)
 	{
-		codeBlocks: null,
-		styleInfo: null
-	};
-
-if (orthodontiaOptions.debug)
-{
-	console.log("Orthodontia is running with Debug Flag");
+		//TODO
+	}
 }
 
-let codeBlocks = identifyCodeBlocks();
 
-let styleInfo = buildBraceStyleInfo(codeBlocks);
-
-if (orthodontiaOptions.debug)
+function startOrthodontia()
 {
-	markCodeBlocks(codeBlocks, styleInfo);
+	window.orthodontiaData =
+		{
+			debugInfo: {},
+			codeBlocks: null,
+			styleInfo: null
+		};
+
+	if (orthodontiaOptions.debug)
+	{
+		console.log("Orthodontia is running with Debug Flag");
+	}
+
+	let codeBlocks = identifyCodeBlocks();
+
+	if (codeBlocks.length !== 0)
+	{
+		let styleInfo = buildBraceStyleInfo(codeBlocks);
+
+		if (orthodontiaOptions.debug)
+		{
+			markCodeBlocks(codeBlocks, styleInfo);
+		}
+
+		orthodontiaData.codeBlocks = codeBlocks;
+		orthodontiaData.styleInfo = styleInfo;
+
+		if (orthodontiaOptions.automaticConversion)
+		{
+			changeAllBraces();
+		}
+	}
 }
 
-orthodontiaData.codeBlocks = codeBlocks;
-orthodontiaData.styleInfo = styleInfo;
-
-if (orthodontiaOptions.automaticConversion)
-{
-	changeAllBraces();
-}
 
 /**
  * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
@@ -67,6 +92,8 @@ function changeAllBraces()
 		styleInfo[i] = orthodontiaOptions.preferredBraceStyle;
 		blocksChanged++;
 	}
+
+	displayBlocksChanged(blocksChanged);
 
 	if (orthodontiaOptions.debug)
 	{
@@ -186,7 +213,7 @@ function identifyCodeBlocks()
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Completed basic Code Block Identification. Identified " + codeBlocks.length + " CodeBlocks");
-		orthodontiaOptions.debugInfo.basicCodeBlocks = codeBlocks;
+		orthodontiaData.debugInfo.basicCodeBlocks = codeBlocks;
 	}
 
 	let userCodeBlocks = Array.from(document.querySelectorAll(orthodontiaOptions.classlist));
@@ -194,7 +221,7 @@ function identifyCodeBlocks()
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Completed extended Code Block Identification based on User classes. Identified " + userCodeBlocks.length + " additional CodeBlocks");
-		orthodontiaOptions.debugInfo.userCodeBlocks = userCodeBlocks;
+		orthodontiaData.debugInfo.userCodeBlocks = userCodeBlocks;
 	}
 
 	return codeBlocks.concat(userCodeBlocks);
@@ -271,7 +298,7 @@ function buildBraceStyleInfo(codeBlocks)
 	{
 		for (let i = 0; i < codeBlocks.length; i++)
 		{
-			if(styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
+			if (styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
 			{
 				continue;
 			}
