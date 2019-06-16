@@ -1,0 +1,1 @@
+//TODO: From the options stored in Chrome storage (set through options page) create a orthodontiaOptions object, and inject it into the main script.

@@ -1,3 +1,5 @@
+//TODO: Things like inline declaration of Arrays (var x = {1,2,3}) are also identified as SAMELINE and affected by the changeBraces
+
 var orthodontiaOptions =
 	{
 		debug: true,
@@ -13,31 +15,27 @@ var orthodontiaData =
 		styleInfo: null
 	};
 
-document.addEventListener("DOMContentLoaded", () =>
+if (orthodontiaOptions.debug)
 {
+	console.log("Orthodontia is running with Debug Flag");
+}
 
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Orthodontia is running with Debug Flag");
-	}
+let codeBlocks = identifyCodeBlocks();
 
-	let codeBlocks = identifyCodeBlocks();
+let styleInfo = buildBraceStyleInfo(codeBlocks);
 
-	let styleInfo = buildBraceStyleInfo(codeBlocks);
+if (orthodontiaOptions.debug)
+{
+	markCodeBlocks(codeBlocks, styleInfo);
+}
 
-	if (orthodontiaOptions.debug)
-	{
-		markCodeBlocks(codeBlocks, styleInfo);
-	}
+orthodontiaData.codeBlocks = codeBlocks;
+orthodontiaData.styleInfo = styleInfo;
 
-	orthodontiaData.codeBlocks = codeBlocks;
-	orthodontiaData.styleInfo = styleInfo;
-
-	if (orthodontiaOptions.automaticConversion)
-	{
-		changeAllBraces();
-	}
-});
+if (orthodontiaOptions.automaticConversion)
+{
+	changeAllBraces();
+}
 
 /**
  * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
@@ -45,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () =>
  */
 function changeAllBraces()
 {
-	if(orthodontiaOptions.debug)
+	if (orthodontiaOptions.debug)
 	{
 		console.log("Starting orthodontic procedure.");
 	}
@@ -89,7 +87,7 @@ function changeBraces(codeBlock, preferredStyle)
 		console.log(codeBlock);
 	}
 
-	if(preferredStyle === "NEXTLINE")
+	if (preferredStyle === "NEXTLINE")
 	{
 		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){/g;
 		/*
@@ -110,7 +108,8 @@ function changeBraces(codeBlock, preferredStyle)
 
 		During replacement, a linebreak and the characters of the Whitespace-Group are inserted befroe the {
 		 */
-		codeBlock.innerHTML = codeBlock.innerHTML.replace(sameLineRegEx,"$1$3<br />$2{");
+
+		codeBlock.innerHTML = codeBlock.innerHTML.replace(sameLineRegEx, "$1$3<br />$2{");
 	}
 
 	//TODO: Converting to SAMELINE
@@ -272,6 +271,11 @@ function buildBraceStyleInfo(codeBlocks)
 	{
 		for (let i = 0; i < codeBlocks.length; i++)
 		{
+			if(styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
+			{
+				continue;
+			}
+
 			console.log("Identified Bracestyle " + styleInfo[i] + " for ");
 			console.log(codeBlocks[i]);
 		}
