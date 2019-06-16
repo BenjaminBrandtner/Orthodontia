@@ -5,11 +5,34 @@
     <title>Orthodontia Options</title>
 </head>
 <script src="options.js"></script>
+<style>
+    .explanation {
+        margin-top: 0;
+    }
+</style>
 <body>
-<h1>Orthodotnia Options</h1>
+<h1>Orthodontia Options</h1>
+<form>
+    <label>Preferred BraceStyle: <select id="preferredBraceStyle">
+        <option value="SAMELINE">{ on same line</option>
+        <option value="NEXTLINE">{ on next line</option>
+    </select></label>
+    <p class="explanation"></p>
 
-<label><input id="automaticConversion" type="checkbox">Convert Code to preferred BraceStyle on page load</label>
+    <label>User Classes <input id="userClasses" type="text"></label>
+    <p class="explanation">A comma seperated list of css classes that should be included when searching the page for
+        blocks of code.</p>
 
+    <label><input id="automaticConversion" type="checkbox">Automatic Conversion</label>
+    <p class="explanation">Automatically convert Code to preferred BraceStyle on page load</p>
 
+    <label><input id="debug" type="checkbox">Debug mode</label>
+    <p class="explanation">Print verbose messages to console and visually label each identified codeBlock on the
+        page</p>
+
+    <button type="button" id="save">Save</button>
+    <span id="savedIndicator"></span>
+
+</form>
 </body>
 </html>

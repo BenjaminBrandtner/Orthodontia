@@ -216,7 +216,7 @@ function identifyCodeBlocks()
 		orthodontiaData.debugInfo.basicCodeBlocks = codeBlocks;
 	}
 
-	let userCodeBlocks = Array.from(document.querySelectorAll(orthodontiaOptions.classlist));
+	let userCodeBlocks = Array.from(document.querySelectorAll(orthodontiaOptions.userClasses));
 
 	if (orthodontiaOptions.debug)
 	{

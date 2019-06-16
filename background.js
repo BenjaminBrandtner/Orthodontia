@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() =>
 		{
 			debug: true,
 			debugInfo: {},
-			classlist: ".w3-code",
+			userClasses: ".w3-code",
 			preferredBraceStyle: "NEXTLINE",
 			automaticConversion: true
 		};
