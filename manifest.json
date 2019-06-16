@@ -3,6 +3,11 @@
 	"name": "Orthodontia",
 	"version": "0.1",
 	"description": "Change Braces to the way you like them!",
+	"icons":
+	{
+		"48": "icons/tooth48.png",
+		"128": "icons/tooth128.png"
+	},
 	"permissions": ["activeTab", "storage"],
 	"content_scripts":
 	[
