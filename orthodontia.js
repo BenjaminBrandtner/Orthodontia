@@ -78,7 +78,7 @@ function changeAllBraces()
 
 /**
  * Changes BraceStyle of given codeblock to the preferred style
- * @param {Node} codeBlock
+ * @param {Element} codeBlock
  * @param {String} preferredStyle
  */
 function changeBraces(codeBlock, preferredStyle)
@@ -89,8 +89,31 @@ function changeBraces(codeBlock, preferredStyle)
 		console.log(codeBlock);
 	}
 
-	//TODO: Write this method.
-	//Elements and text nodes need to be treated differently, probably.
+	if(preferredStyle === "NEXTLINE")
+	{
+		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){/g;
+		/*
+		This Regex matches:
+		Group 1
+		(
+			0 or more linebreaks
+			followed by Group 2 ("Whitespace-Group")
+			(
+				0 or more Space, Tab, or &nbsp;
+			)
+		)
+		followed by Group 3
+		(
+			as few various characters as possible
+		)
+		followed by {
+
+		During replacement, a linebreak and the characters of the Whitespace-Group are inserted befroe the {
+		 */
+		codeBlock.innerHTML = codeBlock.innerHTML.replace(sameLineRegEx,"$1$3<br />$2{");
+	}
+
+	//TODO: Converting to SAMELINE
 
 }
 
