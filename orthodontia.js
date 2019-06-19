@@ -1,5 +1,3 @@
-//TODO: Things like inline declaration of Arrays (var x = {1,2,3}) are also identified as SAMELINE and affected by the changeBraces
-
 //Chrome Plugin Functionality
 {
 	chrome.storage.sync.get(["orthodontiaOptions"], result =>
@@ -116,7 +114,7 @@ function changeBraces(codeBlock, preferredStyle)
 
 	if (preferredStyle === "NEXTLINE")
 	{
-		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){/g;
+		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){(?=(?:<\/[a-z]+>)*(?:<br>|<br\/>|<br \/>|\n))/gi;
 		/*
 		This Regex matches:
 		Group 1
@@ -132,8 +130,9 @@ function changeBraces(codeBlock, preferredStyle)
 			as few various characters as possible
 		)
 		followed by {
+		but only if it is followed by 0 or more closing tags and a linebreak
 
-		During replacement, a linebreak and the characters of the Whitespace-Group are inserted befroe the {
+		During replacement, a linebreak and the characters of the Whitespace-Group are inserted before the {
 		 */
 
 		codeBlock.innerHTML = codeBlock.innerHTML.replace(sameLineRegEx, "$1$3<br />$2{");
@@ -321,11 +320,27 @@ function buildBraceStyleInfo(codeBlocks)
  */
 function identifyBraceStyle(codeBlock)
 {
-	const sameLine = /\S+(.+)?{/g;
+	const sameLine = /\S+.*{\s*\n/g;
+	/*
+	This regex matches
+	1 or more non-whitespace characters
+	followed by 0 or more any characters that aren't linebreaks
+	followed by {
+	followed by 0 or more whitespaces characters
+	followed by a linebreak
+
+	In other words:
+	Any line that has some text before a { and no text after it
+	 */
+
 	const nextLine = /\n(\s+)?{/g;
 
-	//Using Element.innerText here is advised, because it is aware of how it will be rendered as opposed to Node.textContent
-	//See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
+	/*
+	Using Element.innerText here is advised:
+	- because it is aware of how it will be rendered as opposed to Node.textContent
+		- See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
+	- and it is easier to match with RegEx than Element.innerHTML
+	*/
 	let sameLineMatches = codeBlock.innerText.match(sameLine);
 	let nextLineMatches = codeBlock.innerText.match(nextLine);
 
@@ -342,7 +357,7 @@ function identifyBraceStyle(codeBlock)
 	{
 		if (orthodontiaOptions.debug)
 		{
-			console.warn("Unclear Brace Style for:");
+			console.log("Unclear Brace Style for:");
 			console.log(codeBlock);
 			console.log("SAMELINE matches:");
 			console.log(sameLineMatches);

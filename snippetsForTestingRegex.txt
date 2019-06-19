@@ -1,0 +1,10 @@
+enum Temperatur { WARM, KALT, MITTEL };
+
+<span style="color: #0000BB">bar</span><span style="color: #007700">()&nbsp;&nbsp;{<br/>&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span
+
+void funktion_die_nichts_tut(void) {    /* Definition */
+    return;                             /* Return-Anweisung */
+}
+
+int zahlen[] = { 17, 0, 3 };   /* Definition eines Arrays mit 3 ganzzahligen Werten */
+
