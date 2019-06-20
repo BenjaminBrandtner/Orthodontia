@@ -114,7 +114,7 @@ function changeAllBraces()
 
 /**
  * Changes BraceStyle of given codeblock to the preferred style
- * @param {Element} codeBlock
+ * @param {HTMLElement} codeBlock
  * @param {String} preferredStyle
  */
 function changeBraces(codeBlock, preferredStyle)
@@ -155,50 +155,11 @@ function changeBraces(codeBlock, preferredStyle)
 
 }
 
-//Deprecated, only here for reference
-function changeCurlyBrackets(code)
-{
-	console.log("changeCurlyBrackets wurde aufgerufen");
-
-	var curlyBracketsRegExp = / \{/;
-	var curlyBracketsRegExpAll = / \{/g;
-	var whiteSpaceRegExp = /[^ ]/;
-
-	var linesOfCode = code.split("\n");
-
-	var result = "";
-
-	linesOfCode.forEach(line =>
-	{
-		var whiteSpaceCount = line.search(whiteSpaceRegExp);
-
-		if (whiteSpaceCount !== -1)
-		{
-			var replacementString = "\n";
-			for (let i = 0; i < whiteSpaceCount; i++)
-			{
-				replacementString += " ";
-			}
-			replacementString += "{";
-
-			var modifiedLine = line.replace(curlyBracketsRegExpAll, replacementString);
-		}
-		else
-		{
-			var modifiedLine = line.replace(curlyBracketsRegExpAll, "\n<br>{");
-		}
-
-		result += modifiedLine + "\n";
-	});
-
-	return result;
-}
-
 /**
  * Finds all nodes on the page that are likely to contain code.
  * Hopefully does not match the same codeblock twice.
  *
- * @returns {Array<Node>}
+ * @returns {Array<HTMLElement>}
  */
 function identifyCodeBlocks()
 {
@@ -272,7 +233,7 @@ function createTooltip(text, i)
 /**
  * For debugging purposes: Marks all the identified codeBlocks with a tooltip containing their identified braceStyle
  *
- * @param {Array<Node>} codeBlocks
+ * @param {Array<HTMLElement>} codeBlocks
  * @param {Array<String>} styleInfo
  */
 function markCodeBlocks(codeBlocks, styleInfo)
@@ -288,7 +249,7 @@ function markCodeBlocks(codeBlocks, styleInfo)
 /**
  * Builds an Array containing info about braceStyle for each element of codeBlocks
  *
- * @param {Array<Node>} codeBlocks Array of all codeBlocks on the page
+ * @param {Array<HTMLElement>} codeBlocks Array of all codeBlocks on the page
  *
  * @returns {Array<String>} Array containing the info "SAMELINE", "NEXTLINE", "UNCLEAR" or "NONE" for each element of codeBlocks
  */
@@ -327,7 +288,7 @@ function buildBraceStyleInfo(codeBlocks)
 /**
  * Finds out if this codeBlock's braces are on the same or the next line or if it doesn't contain any braces
  *
- * @param {Node} codeBlock
+ * @param {HTMLElement} codeBlock
  *
  * @returns {String} "SAMELINE", "NEXTLINE", "UNCLEAR" or "NONE"
  */
