@@ -1,16 +1,25 @@
 //Chrome Plugin Functionality
 {
-	chrome.storage.sync.get(["orthodontiaOptions"], result =>
+	/**
+	 * Retrieves the orthodontiaOptions from Chrome storage and saves it to a global variable,
+	 * then calls the provided callback function
+	 *
+	 * @param {Function} callback
+	 */
+	function initPlugin(callback)
 	{
-		if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
+		chrome.storage.sync.get(["orthodontiaOptions"], result =>
 		{
-			console.error("Orthodontia Options could not be loaded");
-			return;
-		}
+			if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
+			{
+				console.error("Orthodontia Options could not be loaded");
+				return;
+			}
 
-		window.orthodontiaOptions = result.orthodontiaOptions;
-		startOrthodontia();
-	});
+			window.orthodontiaOptions = result.orthodontiaOptions;
+			callback();
+		});
+	}
 
 	/**
 	 * Displays a number as a badge on the extension icon.
@@ -23,7 +32,11 @@
 	}
 }
 
+initPlugin(startOrthodontia);
 
+/**
+ * Main Function
+ */
 function startOrthodontia()
 {
 	window.orthodontiaData =
