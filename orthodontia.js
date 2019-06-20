@@ -163,7 +163,7 @@ function changeBraces(codeBlock, preferredStyle)
  */
 function identifyCodeBlocks()
 {
-	var codeBlocks = Array.from(document.querySelectorAll("pre, code"));
+	let codeBlocks = Array.from(document.querySelectorAll("pre, code"));
 
 	codeBlocks = codeBlocks.filter(element =>
 	{
@@ -209,11 +209,11 @@ function identifyCodeBlocks()
  */
 function createTooltip(text, i)
 {
-	var tooltipContainer = document.createElement("span");
+	let tooltipContainer = document.createElement("span");
 	tooltipContainer.style.position = "relative";
 	tooltipContainer.style.display = "hidden";
 
-	var tooltip = document.createElement("div");
+	let tooltip = document.createElement("div");
 	tooltip.innerText = text;
 	tooltip.style.background = i % 2 === 0 ? "#00ff00" : "#00ffff";
 	tooltip.style.transition = "opacity 200ms";
@@ -257,7 +257,7 @@ function buildBraceStyleInfo(codeBlocks)
 {
 	let styleInfo = [];
 
-	for (var i = 0; i < codeBlocks.length; i++)
+	for (let i = 0; i < codeBlocks.length; i++)
 	{
 		styleInfo[i] = identifyBraceStyle(codeBlocks[i]);
 	}
