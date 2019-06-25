@@ -1,4 +1,5 @@
-# Orthodontia
+# Orthodontia ![Icon](icons/tooth32.png)
+
 *Change braces to the way you like them*
 
 ## What is it?
