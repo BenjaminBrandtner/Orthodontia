@@ -1,3 +1,11 @@
+let orthodontiaOptions;
+let orthodontiaData =
+	{
+		debugInfo: {},
+		codeBlocks: null,
+		styleInfo: null
+	};
+
 //Chrome Plugin Functionality
 {
 	/**
@@ -16,7 +24,7 @@
 				return;
 			}
 
-			window.orthodontiaOptions = result.orthodontiaOptions;
+			orthodontiaOptions = result.orthodontiaOptions;
 			callback();
 		});
 	}
@@ -36,16 +44,10 @@ initPlugin(startOrthodontia);
 
 /**
  * Main Function
+ * Writes to global variable orthodontiaData
  */
 function startOrthodontia()
 {
-	window.orthodontiaData =
-		{
-			debugInfo: {},
-			codeBlocks: null,
-			styleInfo: null
-		};
-
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
@@ -69,6 +71,13 @@ function startOrthodontia()
 		{
 			changeAllBraces();
 		}
+
+		if(orthodontiaOptions.debug)
+		{
+			console.log("Additional Debug Info:");
+			console.log(orthodontiaData.debugInfo);
+			console.log("Orthodontia is finished.");
+		}
 	}
 }
 
@@ -76,6 +85,7 @@ function startOrthodontia()
 /**
  * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
  * Changes all codeBlocks to the preferred braceStyle.
+ * Accesses global variable orthodontiaData.
  */
 function changeAllBraces()
 {

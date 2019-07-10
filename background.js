@@ -4,11 +4,9 @@ chrome.runtime.onInstalled.addListener(() =>
 	{
 		if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
 		{
-
-			var orthodontiaOptions =
+			let orthodontiaOptions =
 				{
-					debug: true,
-					debugInfo: {},
+					debug: false,
 					userClasses: ".w3-code",
 					preferredBraceStyle: "NEXTLINE",
 					automaticConversion: true
@@ -18,3 +16,5 @@ chrome.runtime.onInstalled.addListener(() =>
 		}
 	});
 });
+
+
