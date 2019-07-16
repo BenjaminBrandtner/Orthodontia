@@ -17,4 +17,19 @@ chrome.runtime.onInstalled.addListener(() =>
 	});
 });
 
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) =>
+{
+	switch (message.function)
+	{
+		case "changeBadgeText":
+			changeBadgeText(message.parameter.toString());
+			break;
+		default:
+			break;
+	}
+});
 
+function changeBadgeText(text)
+{
+	chrome.browserAction.setBadgeText({text: text});
+}

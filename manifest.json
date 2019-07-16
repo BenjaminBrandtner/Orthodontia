@@ -9,6 +9,7 @@
 		"128": "icons/tooth128.png"
 	},
 	"permissions": ["activeTab", "storage"],
+	"browser_action": {},
 	"content_scripts":
 	[
 		{

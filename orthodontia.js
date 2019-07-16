@@ -36,7 +36,12 @@ let orthodontiaData =
 	 */
 	function displayBlocksChanged(number)
 	{
-		//TODO
+		chrome.runtime.sendMessage({function: "changeBadgeText", parameter: number});
+	}
+
+	function resetBadgeText()
+	{
+		chrome.runtime.sendMessage({function: "changeBadgeText", parameter: ""});
 	}
 }
 
@@ -48,6 +53,8 @@ initPlugin(startOrthodontia);
  */
 function startOrthodontia()
 {
+	resetBadgeText();
+
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
@@ -72,7 +79,7 @@ function startOrthodontia()
 			changeAllBraces();
 		}
 
-		if(orthodontiaOptions.debug)
+		if (orthodontiaOptions.debug)
 		{
 			console.log("Additional Debug Info:");
 			console.log(orthodontiaData.debugInfo);
