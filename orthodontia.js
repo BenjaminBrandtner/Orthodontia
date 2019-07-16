@@ -9,6 +9,8 @@ let orthodontiaData =
 //Chrome Plugin Functionality
 {
 	/**
+	 * Executed on page load.
+	 *
 	 * Retrieves the orthodontiaOptions from Chrome storage and saves it to a global variable,
 	 * then calls the provided callback function
 	 *
@@ -29,6 +31,8 @@ let orthodontiaData =
 		});
 	}
 
+
+
 	/**
 	 * Displays a number as a badge on the extension icon.
 	 *
@@ -43,6 +47,11 @@ let orthodontiaData =
 	{
 		chrome.runtime.sendMessage({function: "changeBadgeText", parameter: ""});
 	}
+
+	/*
+	TODO: The badge is currently only reset when another page is loaded, and isn't set when switching back to an already processed tab.
+		It should instead be saved for every tab and should immeadiately change when switching to a processed tab.
+	*/
 }
 
 initPlugin(startOrthodontia);
@@ -91,6 +100,7 @@ function startOrthodontia()
 
 /**
  * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
+ *
  * Changes all codeBlocks to the preferred braceStyle.
  * Accesses global variable orthodontiaData.
  */
@@ -130,7 +140,7 @@ function changeAllBraces()
 }
 
 /**
- * Changes BraceStyle of given codeblock to the preferred style
+ * Changes BraceStyle of an individual codeblock to the preferred style
  * @param {HTMLElement} codeBlock
  * @param {String} preferredStyle
  */
@@ -218,7 +228,8 @@ function identifyCodeBlocks()
 }
 
 /**
- * Creates the tooltip for markCodeBlocks()
+ * Creates the tooltip for markCodeBlocks().
+ * Alternates colors too more easily spot cases where a codeblock has been identified twice.
  *
  * @param {String} text Text to be displayed in the tooltip
  * @param {Number} i The number of times this function has been called

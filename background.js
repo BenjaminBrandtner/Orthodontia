@@ -19,6 +19,14 @@ chrome.runtime.onInstalled.addListener(() =>
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) =>
 {
+	/*
+	All messages are objects like this:
+	{
+		function:String (The name of the background script function that should be called)
+		parameter:any (The parameter to pass to that function)
+	}
+	*/
+
 	switch (message.function)
 	{
 		case "changeBadgeText":
