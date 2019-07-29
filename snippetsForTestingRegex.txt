@@ -8,3 +8,29 @@ void funktion_die_nichts_tut(void) {    /* Definition */
 
 int zahlen[] = { 17, 0, 3 };   /* Definition eines Arrays mit 3 ganzzahligen Werten */
 
+
+It-Handbuch Source Code (Problem: Empty Whitespace-Group because { is on first line)
+<div class="listing"><pre class="prettyprint">   else if(alter &gt; 18)  {
+      printf("Sie sind volljährig\n");
+   }
+   else if(alter == 18) {
+      printf("Den Führerschein schon bestanden?\n");
+   }</pre></div>
+<p>Hier sehen Sie die Syntax dazu:</p>
+<div class="listing"><pre class="prettyprint">if(BEDINGUNG1 == wahr) {
+      Anweisung1;
+}
+else if(BEDINGUNG2 == wahr) {
+      Anweisung2;
+}
+Anweisung3;</pre></div>
+
+
+It-Handbuch after "prettyprint" (Problems: opening HTML-Tag between { and linebreak; whitespace is between HTML Tags)
+<pre class="prettyprint"><span class="pln">   </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">alter </span><span class="pun">&gt;</span><span class="pln"> </span><span class="lit">18</span><span class="pun">)</span><span class="pln">  </span><span class="pun">{</span><span class="pln">
+      printf</span><span class="pun">(</span><span class="str">"Sie sind volljährig\n"</span><span class="pun">);</span><span class="pln">
+   </span><span class="pun">}</span><span class="pln">
+   </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pun">(</span><span class="pln">alter </span><span class="pun">==</span><span class="pln"> </span><span class="lit">18</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+      printf</span><span class="pun">(</span><span class="str">"Den Führerschein schon bestanden?\n"</span><span class="pun">);</span><span class="pln">
+   </span><span class="pun">}</span></pre>
+

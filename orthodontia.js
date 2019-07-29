@@ -129,6 +129,9 @@ function changeBraces(codeBlock, preferredStyle)
 	if (preferredStyle === "NEXTLINE")
 	{
 		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){(?=(?:<\/[a-z]+>)*(?:<br>|<br\/>|<br \/>|\n))/gi;
+		//TODO: Problem: this doesn't match if there are opening HTML-tags after the { and before the linebreak
+		//	maybe check instead, if there are characters outside of HTML-tags between the { and the linebreak
+		//	Also: The Whitespace-Group is empty, if there is no previous linebreak (If the first { is on line 1) and if there are HTML-tags between the linebreak and the whitespace
 		/*
 		This Regex matches:
 		Group 1
