@@ -30,28 +30,6 @@ let orthodontiaData =
 			callback();
 		});
 	}
-
-
-
-	/**
-	 * Displays a number as a badge on the extension icon.
-	 *
-	 * @param {Number} number
-	 */
-	function displayBlocksChanged(number)
-	{
-		chrome.runtime.sendMessage({function: "changeBadgeText", parameter: number});
-	}
-
-	function resetBadgeText()
-	{
-		chrome.runtime.sendMessage({function: "changeBadgeText", parameter: ""});
-	}
-
-	/*
-	TODO: The badge is currently only reset when another page is loaded, and isn't set when switching back to an already processed tab.
-		It should instead be saved for every tab and should immeadiately change when switching to a processed tab.
-	*/
 }
 
 initPlugin(startOrthodontia);
@@ -62,8 +40,6 @@ initPlugin(startOrthodontia);
  */
 function startOrthodontia()
 {
-	resetBadgeText();
-
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
@@ -131,8 +107,6 @@ function changeAllBraces()
 		blocksChanged++;
 	}
 
-	displayBlocksChanged(blocksChanged);
-
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Procedure complete. " + blocksChanged + " CodeBlocks changed.");
@@ -190,6 +164,7 @@ function changeBraces(codeBlock, preferredStyle)
  */
 function identifyCodeBlocks()
 {
+	//TODO: try  :not(pre) > code, pre
 	let codeBlocks = Array.from(document.querySelectorAll("pre, code"));
 
 	codeBlocks = codeBlocks.filter(element =>
