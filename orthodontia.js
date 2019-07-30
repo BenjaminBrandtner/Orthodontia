@@ -1,3 +1,4 @@
+//Global Variables
 let orthodontiaOptions;
 let orthodontiaData =
 	{
@@ -5,6 +6,31 @@ let orthodontiaData =
 		codeBlocks: null,
 		styleInfo: null
 	};
+
+/*
+Writing RegExes for Element.innerText is advised:
+- because Element.innerText is aware of how it will be rendered as opposed to Node.textContent
+	- See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
+- and it is much easier to match with RegEx than Element.innerHTML
+*/
+
+const sameLineRegEx = /^(?<whitespace>[^\S\r\n]*)\S+.*{\s*\n/gm;
+/*
+This regex matches
+From the beginning of the line: ^
+0 or more horizontal whitespace characters, which are captured ([^\S\r\n] is a workaround for regex engines without \h)
+1 or more non-whitespace characters: \S+
+followed by 0 or more any characters: .*
+followed by {
+followed by 0 or more whitespaces characters: \s*
+followed by a linebreak: \n
+
+In simpler words:
+Any line that has some text before a { and no text after it, capturing its indentation
+ */
+
+const nextLineRegEx = /\n(\s+)?{/g;
+/* Not fully tested yet */
 
 //Chrome Plugin Functionality
 {
@@ -32,6 +58,7 @@ let orthodontiaData =
 	}
 }
 
+//Script Start
 initPlugin(startOrthodontia);
 
 /**
@@ -115,6 +142,11 @@ function changeAllBraces()
 
 /**
  * Changes BraceStyle of an individual codeblock to the preferred style
+ *
+ * With the help of the regular expressions declared at the top this method searches through Element.innerText for { that need to be changed.
+ * It then builds an array of necessary changes, e.g. "the first, second, and fourth { of this codeblock need to be changed".
+ * It then goes through Element.innerHTML and makes those changes, because changing Element.innerText directly loses the websites syntax highlighting.
+ *
  * @param {HTMLElement} codeBlock
  * @param {String} preferredStyle
  */
@@ -128,31 +160,77 @@ function changeBraces(codeBlock, preferredStyle)
 
 	if (preferredStyle === "NEXTLINE")
 	{
-		const sameLineRegEx = /((?:<br>|<br\/>|<br \/>|\n)*((?: |\t|&nbsp;)*))(.+?){(?=(?:<\/[a-z]+>)*(?:<br>|<br\/>|<br \/>|\n))/gi;
-		//TODO: Problem: this doesn't match if there are opening HTML-tags after the { and before the linebreak
-		//	maybe check instead, if there are characters outside of HTML-tags between the { and the linebreak
-		//	Also: The Whitespace-Group is empty, if there is no previous linebreak (If the first { is on line 1) and if there are HTML-tags between the linebreak and the whitespace
+		let sameLineMatches = Array.from(codeBlock.innerText.matchAll(sameLineRegEx));
 		/*
-		This Regex matches:
-		Group 1
-		(
-			0 or more linebreaks
-			followed by Group 2 ("Whitespace-Group")
-			(
-				0 or more Space, Tab, or &nbsp;
-			)
-		)
-		followed by Group 3
-		(
-			as few various characters as possible
-		)
-		followed by {
-		but only if it is followed by 0 or more closing tags and a linebreak
+		This creates an Array, where each entry is an Array of capturing groups and further properties
+		Example structure of entries in sameLineMatches:
+		["   else if(age > 18)  {↵", "   ", index: 9, input:"the entire input", groups: { whitespace: "   " } ]
+		["   else if(age == 18) {↵", "   ", index: 79, input: "the entire input", groups:  { whitespace: "   " } ]
+		*/
 
-		During replacement, a linebreak and the characters of the Whitespace-Group are inserted before the {
-		 */
+		let necessaryChanges = [];
+		let braceIndex = codeBlock.innerText.indexOf("{");
+		let braceCount = 0;
 
-		codeBlock.innerHTML = codeBlock.innerHTML.replace(sameLineRegEx, "$1$3<br />$2{");
+		while (braceIndex !== -1)
+		{
+			/*
+			Build an array of necessary changes
+			A change is an object like this:
+			{
+				brace: 3,
+				whitespace: "   "
+			}
+			Which means: The fourth (0-indexed) brace of the codeblock needs to be prepended with a linebreak and this whitespace
+			*/
+
+			//Performance upgrade of this loop would be possible at the cost of readability
+			for (let match of sameLineMatches)
+			{
+				let matchedBraceIndex = match.index + match[0].indexOf("{"); //Determine index of this match's { in the whole codeblock
+
+				if (braceIndex === matchedBraceIndex) //The { at braceIndex is the same as the match
+				{
+					necessaryChanges.push({brace: braceCount, whitespace: match.groups.whitespace});
+					break;
+				}
+			}
+
+			braceCount++;
+
+			braceIndex = codeBlock.innerText.indexOf("{", braceIndex + 1);
+		}
+
+		//Replace whitespace with non-breaking-spaces
+		for (let change of necessaryChanges)
+		{
+			change.whitespace = change.whitespace.replace(/\s/g, "&nbsp;");
+		}
+
+		//Build a new codeblock with the changes
+		let newCodeblock = "";
+		let oldIndex = 0;
+
+		for (let change of necessaryChanges)
+		{
+			let braceIndex = 0;
+
+			//Find index of the brace that needs to be changed
+			for (let i = 0; i <= change.brace; i++)
+			{
+				braceIndex = codeBlock.innerHTML.indexOf("{", braceIndex + 1);
+			}
+
+			newCodeblock += codeBlock.innerHTML.substring(oldIndex, braceIndex); //Add everything from the last { (or the start) up to, but not including, the current {
+			newCodeblock += "<br />" + change.whitespace; //Add a linebreak and the whitespace
+
+			oldIndex = braceIndex;
+		}
+
+		newCodeblock += codeBlock.innerHTML.substring(oldIndex); //Add the rest of the codeblock
+
+		//Put new codeblock on website
+		codeBlock.innerHTML = newCodeblock;
 	}
 
 	//TODO: Converting to SAMELINE
@@ -300,29 +378,8 @@ function buildBraceStyleInfo(codeBlocks)
  */
 function identifyBraceStyle(codeBlock)
 {
-	const sameLine = /\S+.*{\s*\n/g;
-	/*
-	This regex matches
-	1 or more non-whitespace characters
-	followed by 0 or more any characters that aren't linebreaks
-	followed by {
-	followed by 0 or more whitespaces characters
-	followed by a linebreak
-
-	In other words:
-	Any line that has some text before a { and no text after it
-	 */
-
-	const nextLine = /\n(\s+)?{/g;
-
-	/*
-	Using Element.innerText here is advised:
-	- because it is aware of how it will be rendered as opposed to Node.textContent
-		- See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
-	- and it is easier to match with RegEx than Element.innerHTML
-	*/
-	let sameLineMatches = codeBlock.innerText.match(sameLine);
-	let nextLineMatches = codeBlock.innerText.match(nextLine);
+	let sameLineMatches = codeBlock.innerText.match(sameLineRegEx);
+	let nextLineMatches = codeBlock.innerText.match(nextLineRegEx);
 
 	if (sameLineMatches === null)
 	{

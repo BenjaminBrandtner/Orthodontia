@@ -34,3 +34,11 @@ It-Handbuch after "prettyprint" (Problems: opening HTML-Tag between { and linebr
       printf</span><span class="pun">(</span><span class="str">"Den Führerschein schon bestanden?\n"</span><span class="pun">);</span><span class="pln">
    </span><span class="pun">}</span></pre>
 
+
+   else if(alter > 18)  {
+      printf("Sie sind volljährig\n");
+      Array bla = {a, b, c};
+   }
+   else if(alter == 18) {
+      printf("Den Führerschein schon bestanden?\n");
+   }

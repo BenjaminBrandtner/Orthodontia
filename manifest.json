@@ -8,6 +8,7 @@
 		"48": "icons/tooth48.png",
 		"128": "icons/tooth128.png"
 	},
+	"minimum_chrome_version": "73",
 	"permissions": ["activeTab", "storage"],
 	"browser_action": {},
 	"content_scripts":
