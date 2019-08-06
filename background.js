@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(() =>
 			let orthodontiaOptions =
 				{
 					debug: false,
-					userClasses: ".w3-code",
+					userClasses: [{url: "w3schools.com", css: ".w3-code"}],
 					preferredBraceStyle: "NEXTLINE",
 					automaticConversion: true
 				};

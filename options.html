@@ -9,6 +9,9 @@
     .explanation {
         margin-top: 0;
     }
+    body{
+        width: 50em;
+    }
 </style>
 <body>
 <h1>Orthodontia Options</h1>
@@ -19,16 +22,19 @@
     </select></label>
     <p class="explanation"></p>
 
-    <label>User Classes <input id="userClasses" type="text"></label>
-    <p class="explanation">A comma seperated list of css classes that should be included when searching the page for
-        blocks of code.</p>
-
     <label><input id="automaticConversion" type="checkbox">Automatic Conversion</label>
     <p class="explanation">Automatically convert Code to preferred BraceStyle on page load</p>
 
     <label><input id="debug" type="checkbox">Debug mode</label>
     <p class="explanation">Print verbose messages to console and visually label each identified codeBlock on the
         page</p>
+
+    <h2 style="margin-bottom: 0"><label for="userClassesSelect">User Classes</label></h2>
+    <p class="explanation">A list of sites whose codeblocks need to be identified with special CSS Rules.<br>To add a new one, enter a URL and the way that site marks its codeblocks in css selector notation:</p>
+    <select id="userClassesSelect"></select> <a href="#" id="userClassesRemove">remove selected</a><br><br>
+    <label>URL <input type="text" id="userClassesUrl"></label><br>
+    <label>CSS <input type="text" id="userClassesCss"></label>
+    <button type="button" id="userClassesAdd">Add</button><br><br>
 
     <button type="button" id="save">Save</button>
     <span id="savedIndicator"></span>

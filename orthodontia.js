@@ -272,7 +272,15 @@ function identifyCodeBlocks()
 		orthodontiaData.debugInfo.basicCodeBlocks = codeBlocks;
 	}
 
-	let userCodeBlocks = Array.from(document.querySelectorAll(orthodontiaOptions.userClasses));
+	let userCodeBlocks = [];
+
+	for (let userClass of orthodontiaOptions.userClasses)
+	{
+		//TODO: Match current url against userClass.url
+		// See https://stackoverflow.com/questions/39094017/javascript-match-url-with-wildcards-chrome-extension
+
+		userCodeBlocks = userCodeBlocks.concat(Array.from(document.querySelectorAll(userClass.css)));
+	}
 
 	if (orthodontiaOptions.debug)
 	{
