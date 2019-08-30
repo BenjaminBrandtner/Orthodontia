@@ -30,43 +30,47 @@ Any line that has some text before a { and no text after it, capturing its inden
  */
 
 const nextLineRegEx = /\n(\s+)?{/g;
+
 /* Not fully tested yet */
 
-//Chrome Plugin Functionality
+/**
+ * Retrieves the orthodontiaOptions from Chrome storage and saves it to a global variable.
+ */
+function initPlugin()
 {
-	/**
-	 * Executed on page load.
-	 *
-	 * Retrieves the orthodontiaOptions from Chrome storage and saves it to a global variable,
-	 * then calls the provided callback function
-	 *
-	 * @param {Function} callback
-	 */
-	function initPlugin(callback)
+	return new Promise(((resolve, reject) =>
 	{
 		chrome.storage.sync.get(["orthodontiaOptions"], result =>
 		{
 			if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
 			{
-				console.error("Orthodontia Options could not be loaded");
-				return;
+				reject("Orthodontia Options could not be loaded. Please reinstall the extension.");
 			}
 
 			orthodontiaOptions = result.orthodontiaOptions;
-			callback();
+			resolve();
 		});
-	}
+	}));
 }
 
 //Script Start
-initPlugin(startOrthodontia);
+main();
 
 /**
  * Main Function
- * Writes to global variable orthodontiaData
  */
-function startOrthodontia()
+async function main()
 {
+	try
+	{
+		await initPlugin();
+	}
+	catch (e)
+	{
+		console.error(e);
+		return;
+	}
+
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
@@ -102,8 +106,6 @@ function startOrthodontia()
 
 
 /**
- * Function invoked either on load (if automaticConversion is set), or on the press of a button/keystroke.
- *
  * Changes all codeBlocks to the preferred braceStyle.
  * Accesses global variable orthodontiaData.
  */
