@@ -15,17 +15,17 @@
 	[
 		{
 			"matches": ["<all_urls>"],
-			"js": ["orthodontia.js"]
+			"js": ["dist/orthodontia.js"]
 		}
 	],
 	"background":
 	{
-		"scripts": ["background.js"],
+		"scripts": ["dist/background.js"],
 		"persistent": false
 	},
 	"options_ui":
 	{
-		"page": "options.html",
+		"page": "dist/options.html",
 		"open_in_tab": false
 	}
 }
