@@ -1,3 +1,6 @@
+//Exports
+module.exports.identifyBraceStyle = identifyBraceStyle;
+
 //Global Variables
 let orthodontiaOptions;
 let orthodontiaData =
@@ -54,7 +57,6 @@ function initPlugin()
 }
 
 //Script Start
-main();
 
 /**
  * Main Function
