@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "karma start",
-    "build": "browserify src/orthodontia.js src/background.js src/options.js -p [ factor-bundle -o dist/orthodontia.js -o dist/background.js -o dist/options.js ] > NUL && copyfiles -f src/options.html dist",
+    "build": "browserify src/orthodontia.js src/background.js src/options.js -p [ factor-bundle -o dist/orthodontia.js -o dist/background.js -o dist/options.js ] > NUL",
     "watch": "watchify -v --debug src/orthodontia.js src/background.js src/options.js -p [ factor-bundle -o dist/orthodontia.js -o dist/background.js -o dist/options.js ] -o dummy.js",
     "watch:windows": "start cmd.exe /C npm run watch",
     "prewatch": "echo \"Watch Limitation: Changes to anything besides js files will not automatically be copied to dist/\""

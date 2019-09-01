@@ -1,0 +1,31 @@
+{
+	"manifest_version": 2,
+	"name": "Orthodontia",
+	"version": "0.1",
+	"description": "Change Braces to the way you like them!",
+	"icons":
+	{
+		"48": "icons/tooth48.png",
+		"128": "icons/tooth128.png"
+	},
+	"minimum_chrome_version": "73",
+	"permissions": ["activeTab", "storage"],
+	"browser_action": {},
+	"content_scripts":
+	[
+		{
+			"matches": ["<all_urls>"],
+			"js": ["orthodontia.js"]
+		}
+	],
+	"background":
+	{
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"options_ui":
+	{
+		"page": "options.html",
+		"open_in_tab": false
+	}
+}
