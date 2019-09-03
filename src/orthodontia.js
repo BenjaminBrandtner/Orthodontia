@@ -1,3 +1,9 @@
+//Run the main method, if this is running as a plugin
+if(chrome.extension !== undefined)
+{
+	main();
+}
+
 //Exports
 module.exports.identifyBraceStyle = identifyBraceStyle;
 
@@ -55,8 +61,6 @@ function initPlugin()
 		});
 	}));
 }
-
-//Script Start
 
 /**
  * Main Function
