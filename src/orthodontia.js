@@ -8,7 +8,7 @@ if(chrome.extension !== undefined)
 module.exports.identifyBraceStyle = identifyBraceStyle;
 
 //Global Variables
-let orthodontiaOptions;
+let orthodontiaOptions = {};
 let orthodontiaData =
 	{
 		debugInfo: {},
