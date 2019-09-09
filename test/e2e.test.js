@@ -135,12 +135,43 @@ style="color: #FF8000">/*&nbsp;</span>
 		expect(samelineArray).to.deep.equal(nextlineArray);
 	});
 
-	it.skip("converts NEXTLINE to SAMELINE 1", function ()
+	it("converts NEXTLINE to SAMELINE 1", async () =>
 	{
+		let orthodontiaOptions =
+			{
+				debug: false,
+				userClasses: [],
+				preferredBraceStyle: "SAMELINE",
+				automaticConversion: true
+			};
+
+		await main(orthodontiaOptions);
+
+		let cSameline = document.getElementById("cSameline").innerText;
+		let cNextline = document.getElementById("cNextline").innerText;
+
+		let {samelineArray, nextlineArray} = makeEqual(cSameline, cNextline);
+
+		expect(samelineArray).to.deep.equal(nextlineArray);
 
 	});
-	it.skip("converts NEXTLINE to SAMELINE 2", function ()
+	it("converts NEXTLINE to SAMELINE 2", async () =>
 	{
+		let orthodontiaOptions =
+			{
+				debug: false,
+				userClasses: [],
+				preferredBraceStyle: "SAMELINE",
+				automaticConversion: true
+			};
 
+		await main(orthodontiaOptions);
+
+		let phpSameline = document.getElementById("phpSameline").innerText;
+		let phpNextline = document.getElementById("phpNextline").innerText;
+
+		let {samelineArray, nextlineArray} = makeEqual(phpSameline, phpNextline);
+
+		expect(samelineArray).to.deep.equal(nextlineArray);
 	});
 });
