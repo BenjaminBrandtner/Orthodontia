@@ -1,4 +1,4 @@
-# Orthodontia ![Icon](icons/tooth32.png)
+# Orthodontia ![Icon](dist/icons/tooth32.png)
 
 *Change braces to the way you like them*
 
