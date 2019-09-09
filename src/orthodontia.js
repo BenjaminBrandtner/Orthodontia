@@ -1,11 +1,25 @@
-//Run the main method, if this is running as a plugin
-if(chrome.extension !== undefined)
+//Run the main method if this is running as a chrome extension
+(async () =>
 {
-	main();
-}
+	if (chrome.extension)
+	{
+		try
+		{
+			await initPlugin();
+		}
+		catch (e)
+		{
+			console.error(e);
+			return;
+		}
+
+		await main();
+	}
+})();
 
 //Exports
 module.exports.identifyBraceStyle = identifyBraceStyle;
+module.exports.main = main;
 
 //Global Variables
 let orthodontiaOptions = {};
@@ -65,16 +79,11 @@ function initPlugin()
 /**
  * Main Function
  */
-async function main()
+async function main(options)
 {
-	try
+	if(options)
 	{
-		await initPlugin();
-	}
-	catch (e)
-	{
-		console.error(e);
-		return;
+		orthodontiaOptions = options;
 	}
 
 	if (orthodontiaOptions.debug)
