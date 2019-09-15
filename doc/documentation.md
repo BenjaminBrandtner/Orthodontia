@@ -11,7 +11,7 @@ In order to test single functions I first need to export them. Since modules are
 - The tests are written in *Mocha* with the *Chai* assertion library.
 
 ## File and Directory structure
-- Javscript source code is located in src/ and with `npm build` or `npm run watch` is transpiled to dist/ .
+- Javscript source code is located in src/ and with `npm run build` or `npm run watch` is transpiled to dist/ .
 - dist/ also contains all non-js files that are part of the plugin, like manifest.json. This means, after building, the dist directory can be loaded as a Chrome extension with the Load Unpacked button on the Chrome extension page.
 - Test files are located in the test/ directory, any auxiliary test files in subdirectories of test/
 - The root folder contains config files for nodejs, modules, git, and the Readme.
