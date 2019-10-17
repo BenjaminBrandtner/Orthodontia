@@ -18,8 +18,10 @@
 })();
 
 //Exports
-module.exports.identifyBraceStyle = identifyBraceStyle;
+module.exports.setOptions = setOptions;
 module.exports.main = main;
+module.exports.identifyCodeBlocks = identifyCodeBlocks;
+module.exports.identifyBraceStyle = identifyBraceStyle;
 
 //Global Variables
 let orthodontiaOptions = {};
@@ -76,16 +78,22 @@ function initPlugin()
 	}));
 }
 
+
+/**
+ * Injects the orthodontiaOptions for the purposes of unit testing.
+ *
+ * @param {Object} options An instance of orthodontiaOptions
+ */
+function setOptions(options)
+{
+	orthodontiaOptions = options;
+}
+
 /**
  * Main Function
  */
-async function main(options)
+async function main()
 {
-	if(options)
-	{
-		orthodontiaOptions = options;
-	}
-
 	if (orthodontiaOptions.debug)
 	{
 		console.log("Orthodontia is running with Debug Flag");
