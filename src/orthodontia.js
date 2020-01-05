@@ -32,13 +32,6 @@ let orthodontiaData =
 		styleInfo: null
 	};
 
-/*
-Writing RegExes for Element.innerText is advised:
-- because Element.innerText is aware of how it will be rendered as opposed to Node.textContent
-	- See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
-- and it is much easier to match with RegEx than Element.innerHTML
-*/
-
 const sameLineRegEx = /^(?<whitespace>[^\S\r\n]*)\S+.*{\s*\n/gm;
 /*
 This regex matches
@@ -65,11 +58,11 @@ function initPlugin()
 {
 	return new Promise(((resolve, reject) =>
 	{
-		chrome.storage.sync.get(["orthodontiaOptions"], result =>
+		chrome.storage.sync.get(['orthodontiaOptions'], result =>
 		{
 			if (result.orthodontiaOptions === null || result.orthodontiaOptions === undefined)
 			{
-				reject("Orthodontia Options could not be loaded. Please reinstall the extension.");
+				reject('Orthodontia Options could not be loaded. Please reinstall the extension.');
 			}
 
 			orthodontiaOptions = result.orthodontiaOptions;
@@ -77,7 +70,6 @@ function initPlugin()
 		});
 	}));
 }
-
 
 /**
  * Injects the orthodontiaOptions for the purposes of unit testing.
@@ -89,15 +81,29 @@ function setOptions(options)
 	orthodontiaOptions = options;
 }
 
+function debugPrint(text)
+{
+	if (orthodontiaOptions.debug)
+	{
+		console.log(text);
+	}
+}
+
+function debugExecute(func)
+{
+	if (orthodontiaOptions.debug)
+	{
+		func();
+	}
+}
+
 /**
  * Main Function
  */
 async function main()
 {
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Orthodontia is running with Debug Flag");
-	}
+
+	debugPrint('Orthodontia is running with Debug Flag');
 
 	let codeBlocks = identifyCodeBlocks();
 
@@ -105,10 +111,10 @@ async function main()
 	{
 		let styleInfo = buildBraceStyleInfo(codeBlocks);
 
-		if (orthodontiaOptions.debug)
+		debugExecute(() =>
 		{
 			markCodeBlocks(codeBlocks, styleInfo);
-		}
+		});
 
 		orthodontiaData.codeBlocks = codeBlocks;
 		orthodontiaData.styleInfo = styleInfo;
@@ -118,12 +124,9 @@ async function main()
 			changeAllBraces();
 		}
 
-		if (orthodontiaOptions.debug)
-		{
-			console.log("Additional Debug Info:");
-			console.log(orthodontiaData.debugInfo);
-			console.log("Orthodontia is finished.");
-		}
+		debugPrint('Additional Debug Info:');
+		debugPrint(orthodontiaData.debugInfo);
+		debugPrint('Orthodontia is finished.');
 	}
 }
 
@@ -134,10 +137,7 @@ async function main()
  */
 function changeAllBraces()
 {
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Starting orthodontic procedure.");
-	}
+	debugPrint('Starting orthodontic procedure.');
 
 	let styleInfo = orthodontiaData.styleInfo;
 	let codeBlocks = orthodontiaData.codeBlocks;
@@ -145,7 +145,7 @@ function changeAllBraces()
 
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
-		if (styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
+		if (styleInfo[i] === 'NONE' || styleInfo[i] === 'UNCLEAR')
 		{
 			continue;
 		}
@@ -159,10 +159,7 @@ function changeAllBraces()
 		blocksChanged++;
 	}
 
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Procedure complete. " + blocksChanged + " CodeBlocks changed.");
-	}
+	debugPrint('Procedure complete. ' + blocksChanged + ' CodeBlocks changed.');
 }
 
 /**
@@ -170,20 +167,18 @@ function changeAllBraces()
  *
  * With the help of the regular expressions declared at the top this method searches through Element.innerText for { that need to be changed.
  * It then builds an array of necessary changes, e.g. "the first, second, and fourth { of this codeblock need to be changed".
- * It then goes through Element.innerHTML and makes those changes, because changing Element.innerText directly loses the websites syntax highlighting.
+ * It then goes through Element.innerHTML and makes those changes.
+ * We have to use this roundabout way because changing Element.innerText directly loses the website's syntax highlighting.
  *
  * @param {HTMLElement} codeBlock
  * @param {String} preferredStyle
  */
 function changeBraces(codeBlock, preferredStyle)
 {
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Changing to " + preferredStyle + ": ");
-		console.log(codeBlock);
-	}
+	debugPrint('Changing to ' + preferredStyle + ': ');
+	debugPrint(codeBlock);
 
-	if (preferredStyle === "NEXTLINE")
+	if (preferredStyle === 'NEXTLINE')
 	{
 		let sameLineMatches = Array.from(codeBlock.innerText.matchAll(sameLineRegEx));
 		/*
@@ -194,7 +189,7 @@ function changeBraces(codeBlock, preferredStyle)
 		*/
 
 		let necessaryChanges = [];
-		let braceIndex = codeBlock.innerText.indexOf("{");
+		let braceIndex = codeBlock.innerText.indexOf('{');
 		let braceCount = 0;
 
 		while (braceIndex !== -1)
@@ -212,28 +207,28 @@ function changeBraces(codeBlock, preferredStyle)
 			//Performance upgrade of this loop would be possible at the cost of readability
 			for (let match of sameLineMatches)
 			{
-				let matchedBraceIndex = match.index + match[0].indexOf("{"); //Determine index of this match's { in the whole codeblock
+				let matchedBraceIndex = match.index + match[0].indexOf('{'); //Determine index of this match's { in the whole codeblock
 
 				if (braceIndex === matchedBraceIndex) //The { at braceIndex is the same as the match
 				{
-					necessaryChanges.push({brace: braceCount, whitespace: match.groups.whitespace});
+					necessaryChanges.push({ brace: braceCount, whitespace: match.groups.whitespace });
 					break;
 				}
 			}
 
 			braceCount++;
 
-			braceIndex = codeBlock.innerText.indexOf("{", braceIndex + 1);
+			braceIndex = codeBlock.innerText.indexOf('{', braceIndex + 1);
 		}
 
 		//Replace whitespace with non-breaking-spaces
 		for (let change of necessaryChanges)
 		{
-			change.whitespace = change.whitespace.replace(/\s/g, "&nbsp;");
+			change.whitespace = change.whitespace.replace(/\s/g, '&nbsp;');
 		}
 
 		//Build a new codeblock with the changes
-		let newCodeblock = "";
+		let newCodeblock = '';
 		let oldIndex = 0;
 
 		for (let change of necessaryChanges)
@@ -243,11 +238,11 @@ function changeBraces(codeBlock, preferredStyle)
 			//Find index of the brace that needs to be changed
 			for (let i = 0; i <= change.brace; i++)
 			{
-				braceIndex = codeBlock.innerHTML.indexOf("{", braceIndex + 1);
+				braceIndex = codeBlock.innerHTML.indexOf('{', braceIndex + 1);
 			}
 
 			newCodeblock += codeBlock.innerHTML.substring(oldIndex, braceIndex); //Add everything from the last { (or the start) up to, but not including, the current {
-			newCodeblock += "<br />" + change.whitespace; //Add a linebreak and the whitespace
+			newCodeblock += '<br />' + change.whitespace; //Add a linebreak and the whitespace
 
 			oldIndex = braceIndex;
 		}
@@ -271,7 +266,7 @@ function changeBraces(codeBlock, preferredStyle)
 function identifyCodeBlocks()
 {
 	//TODO: try  :not(pre) > code, pre
-	let codeBlocks = Array.from(document.querySelectorAll("pre, code"));
+	let codeBlocks = Array.from(document.querySelectorAll('pre, code'));
 
 	codeBlocks = codeBlocks.filter(element =>
 	{
@@ -281,7 +276,7 @@ function identifyCodeBlocks()
 		{
 			let child = element.childNodes.item(i);
 
-			if ((child.nodeName === "CODE") || (child.nodeName === "PRE"))
+			if ((child.nodeName === 'CODE') || (child.nodeName === 'PRE'))
 			{
 				containsCodeOrPre = true;
 				break;
@@ -291,11 +286,11 @@ function identifyCodeBlocks()
 		return !containsCodeOrPre;
 	});
 
-	if (orthodontiaOptions.debug)
+	debugPrint('Completed basic Code Block Identification. Identified ' + codeBlocks.length + ' CodeBlocks');
+	debugExecute(() =>
 	{
-		console.log("Completed basic Code Block Identification. Identified " + codeBlocks.length + " CodeBlocks");
 		orthodontiaData.debugInfo.basicCodeBlocks = codeBlocks;
-	}
+	});
 
 	let userCodeBlocks = [];
 
@@ -307,11 +302,11 @@ function identifyCodeBlocks()
 		userCodeBlocks = userCodeBlocks.concat(Array.from(document.querySelectorAll(userClass.css)));
 	}
 
-	if (orthodontiaOptions.debug)
+	debugPrint('Completed extended Code Block Identification based on User classes. Identified ' + userCodeBlocks.length + ' additional CodeBlocks');
+	debugExecute(() =>
 	{
-		console.log("Completed extended Code Block Identification based on User classes. Identified " + userCodeBlocks.length + " additional CodeBlocks");
 		orthodontiaData.debugInfo.userCodeBlocks = userCodeBlocks;
-	}
+	});
 
 	return codeBlocks.concat(userCodeBlocks);
 }
@@ -326,21 +321,21 @@ function identifyCodeBlocks()
  */
 function createTooltip(text, i)
 {
-	let tooltipContainer = document.createElement("span");
-	tooltipContainer.style.position = "relative";
-	tooltipContainer.style.display = "hidden";
+	let tooltipContainer = document.createElement('span');
+	tooltipContainer.style.position = 'relative';
+	tooltipContainer.style.display = 'hidden';
 
-	let tooltip = document.createElement("div");
+	let tooltip = document.createElement('div');
 	tooltip.innerText = text;
-	tooltip.style.background = i % 2 === 0 ? "#00ff00" : "#00ffff";
-	tooltip.style.transition = "opacity 200ms";
-	tooltip.addEventListener("mouseenter", event => event.target.style.opacity = "0");
-	tooltip.addEventListener("mouseleave", event => event.target.style.opacity = "initial");
-	tooltip.style.position = "absolute";
-	tooltip.style.display = "inline-block";
-	tooltip.style.bottom = "100%";
-	tooltip.style.zIndex = "10";
-	tooltip.style.fontSize = "small";
+	tooltip.style.background = i % 2 === 0 ? '#00ff00' : '#00ffff';
+	tooltip.style.transition = 'opacity 200ms';
+	tooltip.addEventListener('mouseenter', event => event.target.style.opacity = '0');
+	tooltip.addEventListener('mouseleave', event => event.target.style.opacity = 'initial');
+	tooltip.style.position = 'absolute';
+	tooltip.style.display = 'inline-block';
+	tooltip.style.bottom = '100%';
+	tooltip.style.zIndex = '10';
+	tooltip.style.fontSize = 'small';
 
 	tooltipContainer.appendChild(tooltip);
 
@@ -355,7 +350,7 @@ function createTooltip(text, i)
  */
 function markCodeBlocks(codeBlocks, styleInfo)
 {
-	console.log("Creating graphical tooltips.");
+	debugPrint('Creating graphical tooltips.');
 
 	for (let i = 0; i < codeBlocks.length; i++)
 	{
@@ -379,25 +374,21 @@ function buildBraceStyleInfo(codeBlocks)
 		styleInfo[i] = identifyBraceStyle(codeBlocks[i]);
 	}
 
-	if (orthodontiaOptions.debug)
-	{
-		console.log("Completed Brace Style Identification.");
-	}
-
-	if (orthodontiaOptions.debug)
+	debugPrint('Completed Brace Style Identification.');
+	debugExecute(() =>
 	{
 		for (let i = 0; i < codeBlocks.length; i++)
 		{
-			if (styleInfo[i] === "NONE" || styleInfo[i] === "UNCLEAR")
+			if (styleInfo[i] === 'NONE' || styleInfo[i] === 'UNCLEAR')
 			{
 				continue;
 			}
 
-			console.log("Identified Bracestyle " + styleInfo[i] + " for ");
-			console.log(codeBlocks[i]);
+			debugPrint('Identified Bracestyle ' + styleInfo[i] + ' for ');
+			debugPrint(codeBlocks[i]);
 		}
-	}
 
+	});
 
 	return styleInfo;
 }
@@ -425,31 +416,28 @@ function identifyBraceStyle(codeBlock)
 
 	if (sameLineMatches.length > 0 && nextLineMatches.length > 0)
 	{
-		if (orthodontiaOptions.debug)
-		{
-			console.log("Unclear Brace Style for:");
-			console.log(codeBlock);
-			console.log("SAMELINE matches:");
-			console.log(sameLineMatches);
-			console.log("NEXTLINE matches:");
-			console.log(nextLineMatches);
-		}
+		debugPrint('Unclear Brace Style for:');
+		debugPrint(codeBlock);
+		debugPrint('SAMELINE matches:');
+		debugPrint(sameLineMatches);
+		debugPrint('NEXTLINE matches:');
+		debugPrint(nextLineMatches);
 
-		return "UNCLEAR";
+		return 'UNCLEAR';
 	}
 
 	if (sameLineMatches.length === 0 && nextLineMatches.length === 0)
 	{
-		return "NONE";
+		return 'NONE';
 	}
 
 	if (sameLineMatches.length > 0)
 	{
-		return "SAMELINE";
+		return 'SAMELINE';
 	}
 
 	if (nextLineMatches.length > 0)
 	{
-		return "NEXTLINE";
+		return 'NEXTLINE';
 	}
 }
