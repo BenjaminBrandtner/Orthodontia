@@ -13,7 +13,7 @@
 			return;
 		}
 
-		await main();
+		main();
 	}
 })();
 
@@ -100,7 +100,7 @@ function debugExecute(func)
 /**
  * Main Function
  */
-async function main()
+function main()
 {
 
 	debugPrint('Orthodontia is running with Debug Flag');

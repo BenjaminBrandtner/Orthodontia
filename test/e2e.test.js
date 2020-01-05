@@ -1,11 +1,11 @@
-const chai = require("chai");
+const chai = require('chai');
 const expect = chai.expect;
-const orthodontia = require("../src/orthodontia.js");
+const orthodontia = require('../src/orthodontia.js');
 
 //Destructuring the exports of orthodontia into global variables, so instead of writing orthodontia.foo() everywhere you can just write foo() instead.
 for (let key in orthodontia)
 {
-	eval("var {" + key + "} = orthodontia;");
+	eval('var {' + key + '} = orthodontia;');
 }
 
 //Preparation done.
@@ -23,22 +23,22 @@ for (let key in orthodontia)
 function makeEqual(samelineExample, nextlineExample)
 {
 	//Replace all spaces with non-breaking spaces in both examples
-	samelineExample = samelineExample.replace(/ /g, " ");
-	nextlineExample = nextlineExample.replace(/ /g, " ");
+	samelineExample = samelineExample.replace(/ /g, ' ');
+	nextlineExample = nextlineExample.replace(/ /g, ' ');
 
-	let samelineArray = samelineExample.split("\n");
-	let nextlineArray = nextlineExample.split("\n");
+	let samelineArray = samelineExample.split('\n');
+	let nextlineArray = nextlineExample.split('\n');
 
 	//Trim trailing whitespace in both examples
 	samelineArray = samelineArray.map(line => line.trimEnd());
 	nextlineArray = nextlineArray.map(line => line.trimEnd());
 
-	return {samelineArray, nextlineArray};
+	return { samelineArray, nextlineArray };
 }
 
-describe("End to End", () =>
+describe('End to End', () =>
 {
-	before("Create various examples on the page", () =>
+	before('Create various examples on the page', () =>
 	{
 		document.body.innerHTML = `
 <h2>C Next Line</h2>
@@ -95,86 +95,86 @@ style="color: #FF8000">/*&nbsp;</span>
 `;
 	});
 
-	it("converts SAMELINE to NEXTLINE 1", async () =>
+	it('converts SAMELINE to NEXTLINE 1', async () =>
 	{
 		let orthodontiaOptions =
 			{
 				debug: false,
 				userClasses: [],
-				preferredBraceStyle: "NEXTLINE",
+				preferredBraceStyle: 'NEXTLINE',
 				automaticConversion: true
 			};
 		setOptions(orthodontiaOptions);
 
-		await main();
+		main();
 
-		let cSameline = document.getElementById("cSameline").innerText;
-		let cNextline = document.getElementById("cNextline").innerText;
+		let cSameline = document.getElementById('cSameline').innerText;
+		let cNextline = document.getElementById('cNextline').innerText;
 
-		let {samelineArray, nextlineArray} = makeEqual(cSameline, cNextline);
+		let { samelineArray, nextlineArray } = makeEqual(cSameline, cNextline);
 
 		expect(samelineArray).to.deep.equal(nextlineArray);
 	});
 
-	it("converts SAMELINE to NEXTLINE 2", async () =>
+	it('converts SAMELINE to NEXTLINE 2', async () =>
 	{
 		let orthodontiaOptions =
 			{
 				debug: false,
 				userClasses: [],
-				preferredBraceStyle: "NEXTLINE",
+				preferredBraceStyle: 'NEXTLINE',
 				automaticConversion: true
 			};
 		setOptions(orthodontiaOptions);
 
-		await main();
+		main();
 
-		let phpSameline = document.getElementById("phpSameline").innerText;
-		let phpNextline = document.getElementById("phpNextline").innerText;
+		let phpSameline = document.getElementById('phpSameline').innerText;
+		let phpNextline = document.getElementById('phpNextline').innerText;
 
-		let {samelineArray, nextlineArray} = makeEqual(phpSameline, phpNextline);
+		let { samelineArray, nextlineArray } = makeEqual(phpSameline, phpNextline);
 
 		expect(samelineArray).to.deep.equal(nextlineArray);
 	});
 
-	it.skip("converts NEXTLINE to SAMELINE 1", async () =>
+	it.skip('converts NEXTLINE to SAMELINE 1', async () =>
 	{
 		let orthodontiaOptions =
 			{
 				debug: false,
 				userClasses: [],
-				preferredBraceStyle: "SAMELINE",
+				preferredBraceStyle: 'SAMELINE',
 				automaticConversion: true
 			};
 		setOptions(orthodontiaOptions);
 
-		await main();
+		main();
 
-		let cSameline = document.getElementById("cSameline").innerText;
-		let cNextline = document.getElementById("cNextline").innerText;
+		let cSameline = document.getElementById('cSameline').innerText;
+		let cNextline = document.getElementById('cNextline').innerText;
 
-		let {samelineArray, nextlineArray} = makeEqual(cSameline, cNextline);
+		let { samelineArray, nextlineArray } = makeEqual(cSameline, cNextline);
 
 		expect(samelineArray).to.deep.equal(nextlineArray);
 
 	});
-	it.skip("converts NEXTLINE to SAMELINE 2", async () =>
+	it.skip('converts NEXTLINE to SAMELINE 2', async () =>
 	{
 		let orthodontiaOptions =
 			{
 				debug: false,
 				userClasses: [],
-				preferredBraceStyle: "SAMELINE",
+				preferredBraceStyle: 'SAMELINE',
 				automaticConversion: true
 			};
 		setOptions(orthodontiaOptions);
 
-		await main();
+		main();
 
-		let phpSameline = document.getElementById("phpSameline").innerText;
-		let phpNextline = document.getElementById("phpNextline").innerText;
+		let phpSameline = document.getElementById('phpSameline').innerText;
+		let phpNextline = document.getElementById('phpNextline').innerText;
 
-		let {samelineArray, nextlineArray} = makeEqual(phpSameline, phpNextline);
+		let { samelineArray, nextlineArray } = makeEqual(phpSameline, phpNextline);
 
 		expect(samelineArray).to.deep.equal(nextlineArray);
 	});
